@@ -478,6 +478,118 @@ button { color: inherit; }
 .mascot-profile .mascot { position: absolute; width: 134px; right: -3px; bottom: -13px; }
 .chat-welcome-mascot { width: 85px; margin-bottom: 4px; }
 
+/* Más momentos útiles y una presencia constante de SKY. */
+.quick-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.quick-actions button { min-width: 0; min-height: 68px; display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #e9edf7; border-radius: 17px; background: linear-gradient(145deg, #fff, #fafbff); color: #5876cf; text-align: left; cursor: pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.quick-actions button:hover { transform: translateY(-2px); border-color: #ccd6fb; box-shadow: 0 9px 20px rgba(52, 79, 158, .08); }
+.quick-actions .icon { width: 20px; height: 20px; }
+.quick-actions span { min-width: 0; display: grid; gap: 4px; }
+.quick-actions strong { color: #273555; font-size: 10px; }
+.quick-actions small { color: #929bb0; font-size: 9px; }
+.quote-card { min-height: 195px; }
+.quote-copy { max-width: 78%; }
+.quote-mascot { width: 116px; position: absolute; right: 12px; bottom: -17px; z-index: 1; animation: float 4.2s ease-in-out infinite; }
+.quote-landscape { width: 49%; }
+.quote-star { right: 27%; top: 24px; z-index: 1; }
+.week-card { padding: 20px 22px 15px; }
+.week-card .card-heading { align-items: center; }
+.week-card .card-heading .eyebrow { display: block; margin-bottom: 6px; }
+.week-card .card-heading h2 { font-size: 16px; }
+.week-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-top: 15px; }
+.week-day { min-width: 0; min-height: 76px; display: grid; justify-items: center; align-content: center; gap: 4px; border: 1px solid #edf0f8; border-radius: 15px; background: #fbfcff; color: #9099ae; cursor: pointer; transition: .18s ease; }
+.week-day small { font-size: 9px; }
+.week-day span { min-height: 19px; color: #9da7bb; font-size: 15px; line-height: 1.1; }
+.week-day b { font-size: 10px; font-weight: 600; }
+.week-day.has-activity span { color: #5576d6; }
+.week-day.current { border-color: #aabaff; background: linear-gradient(155deg, #f1f4ff, #faf9ff); color: #395bbd; box-shadow: 0 5px 12px rgba(71, 99, 194, .08); }
+.week-day:hover { border-color: #bdcaf4; transform: translateY(-2px); }
+.week-hint { margin: 11px 1px 0; color: #9aa3b7; font-size: 9px; }
+.breathing-card { min-height: 190px; padding: 22px 25px; display: flex; align-items: center; justify-content: space-between; gap: 20px; overflow: hidden; background: radial-gradient(circle at 86% 48%, #eaf3ff 0, #f2f2ff 25%, #fff 68%); }
+.breathing-copy { max-width: 470px; }
+.breathing-copy .eyebrow { display: block; margin-bottom: 7px; }
+.breathing-copy h2 { margin: 0; font: 700 18px/1.3 'Aptos Display', 'Segoe UI', sans-serif; letter-spacing: -.03em; }
+.breathing-copy p { max-width: 390px; margin: 7px 0 13px; color: #8993aa; font-size: 10px; line-height: 1.55; }
+.breathing-card .secondary-button { color: #526ec5; border-color: #dfe5f7; }
+.breath-guide { width: 142px; height: 142px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle, rgba(118, 144, 235, .13) 0 37%, rgba(118, 144, 235, .07) 38% 56%, transparent 57%); }
+.breath-orb { width: 92px; height: 92px; display: grid; place-content: center; justify-items: center; gap: 3px; border: 1px solid #dbe4ff; border-radius: 50%; color: #5875cf; background: linear-gradient(145deg, white, #edf2ff); box-shadow: 0 10px 26px rgba(83, 110, 203, .13); text-align: center; }
+.breath-orb span { font-size: 10px; }
+.breath-orb strong { color: #98a2b8; font-size: 9px; font-weight: 500; }
+.breath-guide.is-active[data-phase="inhale"] .breath-orb { animation: breathe-in 4s ease-in-out infinite; }
+.breath-guide.is-active[data-phase="hold"] .breath-orb { transform: scale(1.16); transition: transform .8s ease; }
+.breath-guide.is-active[data-phase="exhale"] .breath-orb { animation: breathe-out 6s ease-in-out infinite; }
+.checkin-row { background: linear-gradient(90deg, #f8faff, transparent); }
+.checkin-symbol { background: #e8efff; font-size: 16px; }
+.checkin-mood { color: #627bd0; font-size: 9px; }
+.timeline-sky-card, .goal-sky-guide, .insight-sky-note { position: relative; display: flex; align-items: center; gap: 13px; margin-top: 17px; padding: 14px 20px; overflow: hidden; background: linear-gradient(110deg, #fff, #f3f5ff); }
+.timeline-sky-card .mascot, .goal-sky-guide .mascot, .insight-sky-note .mascot { width: 83px; height: 83px; flex: 0 0 auto; align-self: flex-end; margin: -7px 0 -19px -3px; animation: float 4.2s ease-in-out infinite; }
+.timeline-sky-card > div, .goal-sky-guide > div, .insight-sky-note > div { min-width: 0; }
+.timeline-sky-card .eyebrow, .goal-sky-guide .eyebrow, .insight-sky-note .eyebrow { display: block; margin-bottom: 4px; }
+.timeline-sky-card h2, .goal-sky-guide h2, .insight-sky-note h2 { margin: 0; font: 700 14px/1.3 'Aptos Display', 'Segoe UI', sans-serif; }
+.timeline-sky-card p, .goal-sky-guide p, .insight-sky-note p { margin: 4px 0 0; color: #8590a8; font-size: 10px; line-height: 1.5; }
+.timeline-sky-card > .small-link, .goal-sky-guide > .small-link { margin-left: auto; flex: 0 0 auto; }
+.goal-sky-guide { margin: 18px 0 22px; }
+.insight-sky-note { min-height: 102px; }
+.mode-list .mascot { width: 66px; height: 66px; filter: drop-shadow(0 5px 6px rgba(92, 116, 191, .13)); }
+.sky-buddy { position: fixed; right: 25px; bottom: 24px; z-index: 15; display: grid; justify-items: end; gap: 10px; }
+.sky-buddy-toggle { min-width: 156px; min-height: 70px; display: flex; align-items: center; gap: 9px; padding: 7px 14px 7px 7px; border: 1px solid #dce5ff; border-radius: 24px; background: rgba(255,255,255,.95); box-shadow: 0 13px 32px rgba(42, 62, 132, .18); cursor: pointer; backdrop-filter: blur(10px); transition: transform .2s ease, box-shadow .2s ease; }
+.sky-buddy-toggle:hover { transform: translateY(-3px); box-shadow: 0 17px 35px rgba(42, 62, 132, .23); }
+.sky-buddy-avatar { width: 54px; height: 54px; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border-radius: 18px; background: linear-gradient(145deg, #eff7ff, #dee8ff); }
+.sky-buddy-avatar .mascot { width: 68px; max-width: none; height: 68px; margin-top: 8px; animation: float 4s ease-in-out infinite; }
+.sky-buddy-label { display: grid; gap: 3px; text-align: left; }
+.sky-buddy-label strong { color: #263557; font: 800 12px 'Aptos Display', 'Segoe UI', sans-serif; letter-spacing: .12em; }
+.sky-buddy-label small { color: #8792aa; font-size: 9px; }
+.buddy-sparkle { align-self: flex-start; margin-left: auto; color: #5b8ee4; font-size: 14px; }
+.sky-buddy-panel { position: relative; width: min(290px, calc(100vw - 26px)); padding: 18px; border: 1px solid #e3e9fa; border-radius: 22px; background: rgba(255,255,255,.97); box-shadow: 0 18px 48px rgba(37, 54, 111, .18); backdrop-filter: blur(12px); }
+.sky-buddy-close { position: absolute; top: 11px; right: 11px; width: 28px; height: 28px; font-size: 17px; }
+.sky-buddy-panel-head { display: flex; align-items: center; gap: 10px; padding: 3px 28px 14px 0; }
+.sky-buddy-panel-head > div { display: grid; gap: 4px; }
+.sky-buddy-panel-head strong { font: 700 13px 'Aptos Display', 'Segoe UI', sans-serif; }
+.sky-buddy-panel-head small { color: #8d97ad; font-size: 9px; }
+.buddy-action { width: 100%; min-height: 39px; display: flex; align-items: center; gap: 10px; padding: 7px 9px; border: 0; border-radius: 11px; background: transparent; color: #5e6c8c; text-align: left; cursor: pointer; font-size: 10px; }
+.buddy-action:hover { background: #f4f6ff; color: #496ac7; }
+.buddy-action .icon { width: 17px; height: 17px; color: #6581d8; }
+@keyframes breathe-in { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+@keyframes breathe-out { 0%, 100% { transform: scale(1.16); } 50% { transform: scale(.94); } }
+@media (max-width: 780px) {
+  .sky-buddy { right: 13px; bottom: 88px; }
+  .sky-buddy-toggle { min-width: 0; min-height: 60px; padding: 5px; border-radius: 21px; }
+  .sky-buddy-avatar { width: 50px; height: 50px; }
+  .sky-buddy-label, .buddy-sparkle { display: none; }
+  .sky-buddy-panel { margin-bottom: 1px; }
+  .week-card { padding: 17px 14px 13px; }
+  .week-strip { gap: 5px; }
+  .week-day { min-height: 66px; border-radius: 12px; }
+  .breathing-card { padding: 19px; }
+  .breath-guide { width: 115px; height: 115px; }
+  .breath-orb { width: 76px; height: 76px; }
+  .quote-mascot { width: 91px; right: 2px; }
+  .quote-copy { max-width: 82%; }
+}
+@media (max-width: 520px) {
+  .quick-actions { grid-template-columns: 1fr; gap: 7px; }
+  .quick-actions button { min-height: 55px; padding: 9px 12px; }
+  .quick-actions button .icon { width: 18px; height: 18px; }
+  .quick-actions strong { font-size: 10px; }
+  .quick-actions small { font-size: 8px; }
+  .quote-card { min-height: 170px; padding: 21px 18px; }
+  .quote-copy { max-width: 85%; }
+  .quote-copy h2 { font-size: 17px; }
+  .quote-mascot { width: 72px; right: -7px; bottom: -12px; }
+  .week-day { min-height: 62px; }
+  .week-day small { font-size: 8px; }
+  .week-day span { font-size: 13px; }
+  .breathing-card { min-height: 0; gap: 5px; padding: 17px 15px; }
+  .breathing-copy h2 { font-size: 15px; }
+  .breathing-copy p { font-size: 9px; }
+  .breath-guide { width: 88px; height: 88px; }
+  .breath-orb { width: 65px; height: 65px; }
+  .breath-orb span { font-size: 8px; }
+  .timeline-sky-card, .goal-sky-guide, .insight-sky-note { flex-wrap: wrap; gap: 9px; padding: 12px 14px; }
+  .timeline-sky-card .mascot, .goal-sky-guide .mascot, .insight-sky-note .mascot { width: 62px; height: 62px; margin-left: -8px; }
+  .timeline-sky-card > div, .goal-sky-guide > div, .insight-sky-note > div { flex: 1 1 calc(100% - 75px); }
+  .timeline-sky-card > .small-link, .goal-sky-guide > .small-link { margin: 0 0 0 54px; }
+}
+
 @media (max-width: 1040px) {
   .timeline-layout { grid-template-columns: minmax(280px, .85fr) minmax(0, 1.15fr); }
   .goal-list { gap: 10px; }

@@ -6,12 +6,14 @@ let goalFilter = 'active';
 let selectedDate = dateKey(new Date());
 let onboardingDraft = {};
 let toastTimer;
+let breathInterval;
 
 const appShell = document.querySelector('#appShell');
 const onboardingRoot = document.querySelector('#onboardingRoot');
 const viewRoot = document.querySelector('#viewRoot');
 const sidebar = document.querySelector('#sidebar');
 const toast = document.querySelector('#toast');
+const skyBuddy = document.querySelector('#skyBuddy');
 
 const moodOptions = [
   { label: 'Genial', emoji: '😊', color: 'blue' },
@@ -84,12 +86,16 @@ function renderOnboarding(step = 0) {
   }
   onboardingRoot.innerHTML = `<main class="onboarding-screen step-${step}">${content}</main>`;
   appShell.hidden = true;
+  skyBuddy.hidden = true;
 }
 
 function enterApp() {
   if (!data.profile?.name) { renderOnboarding(0); return; }
   onboardingRoot.innerHTML = '';
   appShell.hidden = false;
+  skyBuddy.hidden = false;
+  document.querySelector('#skyBuddyAvatar').innerHTML = mascot('happy');
+  document.querySelector('#skyBuddyPanelAvatar').innerHTML = mascot('supporting');
   trackUsage();
   renderView('home');
 }
@@ -100,6 +106,26 @@ function moodButtons(selected) {
 function renderEntryRow(entry) {
   const mood = moodOptions.find((option) => option.label === entry.mood);
   return `<article class="entry-row"><span class="entry-symbol">${escapeHtml(entry.emoji || '✦')}</span><div class="entry-main"><div class="entry-title-line"><strong>${escapeHtml(entry.activity || 'Momento del día')}</strong>${entry.time ? `<time>${escapeHtml(entry.time)}</time>` : ''}</div><p>${escapeHtml(entry.note)}</p><div class="entry-meta">${mood ? `<span>${mood.emoji} ${mood.label}</span>` : ''}${entry.sleepHours ? `<span>${icon('moon')} ${escapeHtml(entry.sleepHours)} h de sueño</span>` : ''}</div></div></article>`;
+}
+function renderCheckinRow(checkin) {
+  const mood = moodOptions.find((option) => option.label === checkin.mood);
+  if (!mood) return '';
+  return `<article class="entry-row checkin-row"><span class="entry-symbol checkin-symbol">${mood.emoji}</span><div class="entry-main"><div class="entry-title-line"><strong>Así te sentiste</strong><span class="checkin-mood">${mood.label}</span></div><p>Tu pausa para escucharte, guardada solo para ti.</p></div></article>`;
+}
+function renderWeekStrip() {
+  const today = fromDateKey(todayKey());
+  const mondayOffset = (today.getDay() + 6) % 7;
+  const monday = new Date(today); monday.setDate(today.getDate() - mondayOffset);
+  const shortDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  return `<section class="card week-card"><div class="card-heading"><div><span class="eyebrow">TUS PEQUEÑOS MOMENTOS</span><h2>Esta semana</h2></div><button class="small-link" type="button" data-view="timeline">Ver Timeline ${icon('arrow')}</button></div><div class="week-strip">${shortDays.map((label, index) => {
+    const day = new Date(monday); day.setDate(monday.getDate() + index); const key = dateKey(day);
+    const mood = data.checkins[key]?.mood; const entryCount = data.entries.filter((entry) => entry.date === key).length;
+    const selected = mood ? moodOptions.find((option) => option.label === mood)?.emoji : entryCount ? '•' : '—';
+    return `<button class="week-day ${key === todayKey() ? 'current' : ''} ${mood || entryCount ? 'has-activity' : ''}" type="button" data-week-date="${key}" aria-label="${label} ${day.getDate()}${mood ? `, ánimo ${escapeHtml(mood)}` : ''}${entryCount ? `, ${entryCount} registros` : ''}"><small>${label}</small><span>${selected}</span><b>${day.getDate()}</b></button>`;
+  }).join('')}</div><p class="week-hint">Los días se completan con lo que tú registres.</p></section>`;
+}
+function renderBreathingCard() {
+  return `<section class="card breathing-card"><div class="breathing-copy"><span class="eyebrow">UN RESPIRO</span><h2>Un minuto para volver a ti.</h2><p>Prueba un ritmo tranquilo: inhala, mantén y suelta. Puedes parar cuando quieras.</p><button class="secondary-button" type="button" data-action="start-breath" id="breathButton">Empezar pausa</button></div><div class="breath-guide" id="breathGuide"><div class="breath-orb"><span id="breathPhase">A tu ritmo</span><strong id="breathCount">60</strong></div></div></section>`;
 }
 function renderHome() {
   const today = todayKey();
@@ -112,10 +138,13 @@ function renderHome() {
     <div class="home-layout">
       <div class="home-main-column">
         <section class="card mood-card"><div class="card-heading"><div><h2>¿Cómo te sientes hoy?</h2><p>Elige lo que más se acerque. Puedes cambiarlo cuando quieras.</p></div><span class="quiet-note">${checkin ? 'Guardado en este dispositivo' : 'Solo para ti'}</span></div><div class="mood-options" role="group" aria-label="Cómo te sientes">${moodButtons(checkin?.mood)}</div></section>
-        <section class="card quote-card"><div class="quote-copy"><span class="eyebrow">UN PASO A LA VEZ</span><h2>Pequeños pasos cada día<br />te acercan a lo que importa.</h2><span class="quote-by">— SKY</span></div><div class="quote-landscape" aria-hidden="true"><span></span><span></span><span></span></div><div class="quote-star">${icon('sparkle')}</div></section>
+        <section class="quick-actions" aria-label="Accesos rápidos"><button type="button" data-action="add-entry">${icon('plus')}<span><strong>Registrar momento</strong><small>Guarda algo de hoy</small></span></button><button type="button" data-view="goals">${icon('target')}<span><strong>Añadir objetivo</strong><small>Un paso a la vez</small></span></button><button type="button" data-view="chat">${icon('chat')}<span><strong>Hablar con SKY</strong><small>Ordena tus ideas</small></span></button></section>
+        <section class="card quote-card"><div class="quote-copy"><span class="eyebrow">UN PASO A LA VEZ</span><h2>Pequeños pasos cada día<br />te acercan a lo que importa.</h2><span class="quote-by">— SKY</span></div><div class="quote-landscape" aria-hidden="true"><span></span><span></span><span></span></div><div class="quote-star">${icon('sparkle')}</div>${mascot('happy', 'quote-mascot')}</section>
         <section class="card day-summary"><div class="card-heading"><div><span class="eyebrow">HOY · ${escapeHtml(formatDate(today, { day: 'numeric', month: 'long' }))}</span><h2>Resumen de hoy</h2></div><button class="icon-button" type="button" data-action="add-entry" aria-label="Añadir registro">${icon('plus')}</button></div>
           ${entries.length ? `<div class="entry-list">${entries.map(renderEntryRow).join('')}</div>` : `<div class="summary-empty"><span class="empty-mini-icon">${icon('book')}</span><div><strong>Tu día todavía está por escribir</strong><p>Registra algo que hiciste o cómo te sentiste; aparecerá aquí y en tu Timeline.</p></div><button class="small-link" type="button" data-action="add-entry">Añadir registro ${icon('arrow')}</button></div>`}
         </section>
+        ${renderWeekStrip()}
+        ${renderBreathingCard()}
         <div class="home-lower-grid"><section class="card home-goals"><div class="card-heading"><div><span class="eyebrow">A TU RITMO</span><h2>Mis objetivos</h2></div><button class="small-link" type="button" data-view="goals">Ver todos ${icon('arrow')}</button></div>
           ${goals.length ? `<div class="mini-goal-list">${goals.map((goal) => `<div class="mini-goal"><span>${escapeHtml(goal.emoji)}</span><div><strong>${escapeHtml(goal.title)}</strong><small>${goal.progress || 0}% de progreso</small></div></div>`).join('')}</div>` : `<p class="muted-copy">Todavía no has elegido objetivos. Puedes partir de una idea o crear uno propio.</p><button class="small-link" type="button" data-view="goals">Explorar ideas ${icon('arrow')}</button>`}
         </section><section class="card timeline-teaser"><div class="card-heading"><div><span class="eyebrow">TU HISTORIA</span><h2>Timeline</h2></div>${icon('calendar', 'heading-icon')}</div><p class="muted-copy">Cada día puede guardar un pequeño momento que quieras recordar.</p><button class="small-link" type="button" data-view="timeline">Abrir calendario ${icon('arrow')}</button></section></div>
@@ -141,7 +170,7 @@ function renderCalendar() {
     else if (i >= firstWeekday + count) { day = i - firstWeekday - count + 1; outside = true; cellMonth += 1; if (cellMonth > 11) { cellMonth = 0; year += 1; } }
     else day = i - firstWeekday + 1;
     const key = dateKey(new Date(year, cellMonth, day, 12));
-    const hasEntries = data.entries.some((entry) => entry.date === key);
+    const hasEntries = data.entries.some((entry) => entry.date === key) || Boolean(data.checkins[key]?.mood);
     cells.push(`<button class="calendar-day ${outside ? 'outside' : ''} ${key === selectedDate ? 'selected' : ''} ${key === todayKey() ? 'today' : ''}" type="button" data-date="${key}" aria-label="${escapeHtml(formatDate(key))}${hasEntries ? ', con registros' : ''}" aria-pressed="${key === selectedDate}"><span>${day}</span>${hasEntries ? '<i></i>' : ''}</button>`);
   }
   const weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((day) => `<span>${day}</span>`).join('');
@@ -149,7 +178,9 @@ function renderCalendar() {
 }
 function renderTimeline() {
   const entries = data.entries.filter((entry) => entry.date === selectedDate).sort((a, b) => (a.time || '').localeCompare(b.time || ''));
-  return `<section class="view-page"><header class="page-intro timeline-intro"><div><span class="eyebrow">TU HISTORIA, DÍA A DÍA</span><h1>Timeline</h1><p>Un calendario de lo que viviste y cómo te sentiste.</p></div><button class="primary-button" type="button" data-action="add-entry">${icon('plus')} Añadir registro</button></header><div class="timeline-layout"><section class="card calendar-card">${renderCalendar()}<div class="calendar-legend"><span><i class="legend-dot today-dot"></i>Hoy</span><span><i class="legend-dot record-dot"></i>Día con registro</span></div></section><section class="card selected-day-card"><div class="selected-day-heading"><div><span class="eyebrow">${escapeHtml(formatDate(selectedDate, { weekday: 'long' }))}</span><h2>${escapeHtml(formatDate(selectedDate, { day: 'numeric', month: 'long' }))}</h2></div><button class="icon-button" type="button" data-action="add-entry" aria-label="Añadir registro">${icon('plus')}</button></div>${entries.length ? `<div class="entry-list">${entries.map(renderEntryRow).join('')}</div>` : `<div class="selected-day-empty"><span class="empty-mini-icon">${icon('sparkle')}</span><h3>Aún no hay registros este día</h3><p>Puedes anotar algo que hiciste, cómo te sentiste o lo que quieras recordar.</p><button class="text-action" type="button" data-action="add-entry">Añadir un momento ${icon('arrow')}</button></div>`}</section></div>${entryDialog()}</section>`;
+  const checkin = data.checkins[selectedDate];
+  const hasRecords = entries.length || checkin?.mood;
+  return `<section class="view-page"><header class="page-intro timeline-intro"><div><span class="eyebrow">TU HISTORIA, DÍA A DÍA</span><h1>Timeline</h1><p>Un calendario de lo que viviste y cómo te sentiste.</p></div><button class="primary-button" type="button" data-action="add-entry">${icon('plus')} Añadir registro</button></header><div class="timeline-layout"><section class="card calendar-card">${renderCalendar()}<div class="calendar-legend"><span><i class="legend-dot today-dot"></i>Hoy</span><span><i class="legend-dot record-dot"></i>Día con registro</span></div></section><section class="card selected-day-card"><div class="selected-day-heading"><div><span class="eyebrow">${escapeHtml(formatDate(selectedDate, { weekday: 'long' }))}</span><h2>${escapeHtml(formatDate(selectedDate, { day: 'numeric', month: 'long' }))}</h2></div><button class="icon-button" type="button" data-action="add-entry" aria-label="Añadir registro">${icon('plus')}</button></div>${hasRecords ? `<div class="entry-list">${renderCheckinRow(checkin)}${entries.map(renderEntryRow).join('')}</div>` : `<div class="selected-day-empty"><span class="empty-mini-icon">${icon('sparkle')}</span><h3>Aún no hay registros este día</h3><p>Puedes anotar algo que hiciste, cómo te sentiste o lo que quieras recordar.</p><button class="text-action" type="button" data-action="add-entry">Añadir un momento ${icon('arrow')}</button></div>`}</section></div><section class="card timeline-sky-card">${mascot('thinking')}<div><span class="eyebrow">UN RECORDATORIO AMABLE</span><h2>No todos los días tienen que ser extraordinarios.</h2><p>Un detalle pequeño también merece un lugar en tu historia.</p></div><button class="small-link" type="button" data-action="add-entry">Guardar un momento ${icon('arrow')}</button></section>${entryDialog()}</section>`;
 }
 function entryDialog() {
   return `<dialog class="form-dialog" id="entryDialog"><form method="dialog" class="dialog-close-row"><button class="icon-button" value="cancel" aria-label="Cerrar">×</button></form><form id="entryForm" class="dialog-form"><span class="eyebrow">UN MOMENTO PARA RECORDAR</span><h2>Añadir al Timeline</h2><label class="field"><span>¿Qué hiciste o qué te gustaría recordar?</span><textarea name="note" rows="3" maxlength="360" required placeholder="Escribe un momento de tu día…"></textarea></label><div class="form-two-col"><label class="field"><span>Fecha</span><input type="date" name="date" value="${selectedDate}" required /></label><label class="field"><span>Actividad</span><select name="activity"><option>Momento del día</option><option>Estudio</option><option>Trabajo</option><option>Entrenamiento</option><option>Descanso</option><option>Familia y amistades</option><option>Otro</option></select></label></div><label class="field"><span>¿Cómo te sentiste?</span><select name="mood"><option value="">Prefiero no decirlo</option>${moodOptions.map((mood) => `<option>${mood.label}</option>`).join('')}</select></label><details class="optional-details"><summary>Añadir datos para tus Insights <span>(opcional)</span></summary><div class="form-two-col"><label class="field"><span>Horas de sueño</span><input name="sleepHours" type="number" min="0" max="24" step="0.5" placeholder="Ej. 7.5" /></label><label class="field"><span>Motivación (1–5)</span><select name="motivation"><option value="">Omitir</option><option value="1">1 · Muy baja</option><option value="2">2 · Baja</option><option value="3">3 · Media</option><option value="4">4 · Alta</option><option value="5">5 · Muy alta</option></select></label><label class="field"><span>¿Cuándo sentiste esa motivación?</span><select name="motivationMoment"><option value="">Omitir</option><option value="morning">Por la mañana</option><option value="afternoon">Por la tarde</option><option value="evening">Por la noche</option></select></label><label class="field"><span>¿Cuándo te costó más empezar?</span><select name="difficultyMoment"><option value="">Omitir</option><option value="morning">Por la mañana</option><option value="afternoon">Por la tarde</option><option value="evening">Por la noche</option><option value="none">No me pasó</option></select></label></div></details><div class="dialog-actions"><button class="secondary-button" type="button" data-action="close-entry">Cancelar</button><button class="primary-button" type="submit">Guardar momento ${icon('check')}</button></div></form></dialog>`;
@@ -164,7 +195,7 @@ function renderGoalSuggestions() {
 }
 function renderGoals() {
   const list = data.goals.filter((goal) => Boolean(goal.completed) === (goalFilter === 'completed'));
-  return `<section class="view-page"><header class="page-intro goals-intro"><div><span class="eyebrow">PASOS QUE TE ACERCAN A LO QUE QUIERES</span><h1>Mis objetivos</h1><p>Elige tus propios objetivos y avanza sin compararte.</p></div><button class="primary-button" type="button" data-action="add-goal">${icon('plus')} Nuevo objetivo</button></header><div class="goal-tabs" role="tablist"><button class="${goalFilter === 'active' ? 'active' : ''}" type="button" role="tab" aria-selected="${goalFilter === 'active'}" data-goal-filter="active">Activos <span>${data.goals.filter((goal) => !goal.completed).length}</span></button><button class="${goalFilter === 'completed' ? 'active' : ''}" type="button" role="tab" aria-selected="${goalFilter === 'completed'}" data-goal-filter="completed">Completados <span>${data.goals.filter((goal) => goal.completed).length}</span></button></div><div class="goal-list">${list.length ? list.map(goalCard).join('') : `<section class="card goal-empty"><span class="empty-illustration">${icon(goalFilter === 'active' ? 'target' : 'check')}</span><h2>${goalFilter === 'active' ? 'Todavía no hay objetivos activos' : 'Aún no has completado objetivos'}</h2><p>${goalFilter === 'active' ? 'Puedes crear uno propio o añadir una idea de las sugerencias.' : 'Cuando completes un objetivo, lo encontrarás aquí.'}</p>${goalFilter === 'active' ? '<button class="primary-button" type="button" data-action="add-goal">Crear mi primer objetivo</button>' : ''}</section>`}</div>${goalFilter === 'active' ? renderGoalSuggestions() : ''}${goalDialog()}</section>`;
+  return `<section class="view-page"><header class="page-intro goals-intro"><div><span class="eyebrow">PASOS QUE TE ACERCAN A LO QUE QUIERES</span><h1>Mis objetivos</h1><p>Elige tus propios objetivos y avanza sin compararte.</p></div><button class="primary-button" type="button" data-action="add-goal">${icon('plus')} Nuevo objetivo</button></header><div class="goal-tabs" role="tablist"><button class="${goalFilter === 'active' ? 'active' : ''}" type="button" role="tab" aria-selected="${goalFilter === 'active'}" data-goal-filter="active">Activos <span>${data.goals.filter((goal) => !goal.completed).length}</span></button><button class="${goalFilter === 'completed' ? 'active' : ''}" type="button" role="tab" aria-selected="${goalFilter === 'completed'}" data-goal-filter="completed">Completados <span>${data.goals.filter((goal) => goal.completed).length}</span></button></div><div class="goal-list">${list.length ? list.map(goalCard).join('') : `<section class="card goal-empty"><span class="empty-illustration">${icon(goalFilter === 'active' ? 'target' : 'check')}</span><h2>${goalFilter === 'active' ? 'Todavía no hay objetivos activos' : 'Aún no has completado objetivos'}</h2><p>${goalFilter === 'active' ? 'Puedes crear uno propio o añadir una idea de las sugerencias.' : 'Cuando completes un objetivo, lo encontrarás aquí.'}</p>${goalFilter === 'active' ? '<button class="primary-button" type="button" data-action="add-goal">Crear mi primer objetivo</button>' : ''}</section>`}</div>${goalFilter === 'active' ? `<section class="card goal-sky-guide">${mascot('happy')}<div><span class="eyebrow">SKY TE ACOMPAÑA</span><h2>No hace falta cambiarlo todo hoy.</h2><p>Elige un objetivo que de verdad te importe. Después podrás dividirlo en pasos y ajustar el ritmo.</p></div><button class="small-link" type="button" data-view="chat">Pensarlo con SKY ${icon('arrow')}</button></section>${renderGoalSuggestions()}` : ''}${goalDialog()}</section>`;
 }
 function goalDialog() {
   return `<dialog class="form-dialog" id="goalDialog"><form method="dialog" class="dialog-close-row"><button class="icon-button" value="cancel" aria-label="Cerrar">×</button></form><form id="goalForm" class="dialog-form"><span class="eyebrow">ALGO QUE TE IMPORTA</span><h2>Crear un objetivo</h2><label class="field"><span>Emoji</span><input name="emoji" maxlength="4" value="✨" aria-label="Emoji del objetivo" /></label><label class="field"><span>¿Qué te gustaría conseguir?</span><input name="title" maxlength="80" required placeholder="Ej. Moverme tres veces por semana" /></label><label class="field"><span>Fecha objetivo <small>(opcional)</small></span><input name="deadline" type="date" /></label><div class="dialog-actions"><button class="secondary-button" type="button" data-action="close-goal">Cancelar</button><button class="primary-button" type="submit">Guardar objetivo ${icon('check')}</button></div></form></dialog>`;
@@ -207,7 +238,7 @@ function buildInsights() {
 }
 function renderInsights() {
   const streak = getStreak();
-  return `<section class="view-page"><header class="page-intro"><span class="eyebrow">REFLEXIONES BASADAS EN TI</span><h1>Insights</h1><p>Patrones que podrían ayudarte a conocerte mejor.</p></header><section class="card insights-card"><div class="section-heading"><div><span class="eyebrow">POCO A POCO</span><h2>Patrones que estamos observando</h2></div><span>Solo a partir de tus registros</span></div><div class="insight-list">${buildInsights().map(insightTile).join('')}</div></section><section class="card streak-wide"><div class="streak-icon">${icon('fire')}</div><div><span class="eyebrow">TU RACHA ACTUAL</span><h2>${streak} ${streak === 1 ? 'día' : 'días'} <span>${streak ? 'seguidos usando SKY' : 'por ahora'}</span></h2><p>${streak ? 'Cada visita cuenta como un día de tu camino.' : 'Vuelve mañana para empezar tu racha.'} Esta racha se guarda en este dispositivo.</p></div><div class="streak-dots">${Array.from({ length: 7 }, (_, index) => `<i class="${index < Math.min(streak, 7) ? 'filled' : ''}"></i>`).join('')}</div></section><p class="insights-note">SKY no saca conclusiones a partir de un solo día. Puedes revisar o borrar tus registros desde el Timeline.</p></section>`;
+  return `<section class="view-page"><header class="page-intro"><span class="eyebrow">REFLEXIONES BASADAS EN TI</span><h1>Insights</h1><p>Patrones que podrían ayudarte a conocerte mejor.</p></header><section class="card insights-card"><div class="section-heading"><div><span class="eyebrow">POCO A POCO</span><h2>Patrones que estamos observando</h2></div><span>Solo a partir de tus registros</span></div><div class="insight-list">${buildInsights().map(insightTile).join('')}</div></section><section class="card streak-wide"><div class="streak-icon">${icon('fire')}</div><div><span class="eyebrow">TU RACHA ACTUAL</span><h2>${streak} ${streak === 1 ? 'día' : 'días'} <span>${streak ? 'seguidos usando SKY' : 'por ahora'}</span></h2><p>${streak ? 'Cada visita cuenta como un día de tu camino.' : 'Vuelve mañana para empezar tu racha.'} Esta racha se guarda en este dispositivo.</p></div><div class="streak-dots">${Array.from({ length: 7 }, (_, index) => `<i class="${index < Math.min(streak, 7) ? 'filled' : ''}"></i>`).join('')}</div></section><section class="card insight-sky-note">${mascot('thinking')}<div><span class="eyebrow">CON CALMA Y SIN JUICIOS</span><h2>Los patrones son pistas, no etiquetas.</h2><p>SKY te los muestra para que decidas si encajan contigo.</p></div></section><p class="insights-note">SKY no saca conclusiones a partir de un solo día. Puedes revisar o borrar tus registros desde el Timeline.</p></section>`;
 }
 
 function renderChat() {
@@ -219,6 +250,7 @@ function renderProfile() {
 }
 
 function renderView(view) {
+  stopBreathing();
   currentView = sectionLabels[view] ? view : 'home';
   if (currentView === 'home') viewRoot.innerHTML = renderHome();
   else if (currentView === 'timeline') viewRoot.innerHTML = renderTimeline();
@@ -232,6 +264,42 @@ function renderView(view) {
     if (button.matches('.nav-item, .mobile-nav-item')) button.setAttribute('aria-current', button.dataset.view === currentView ? 'page' : 'false');
   });
   sidebar.classList.remove('is-open');
+  document.querySelector('#skyBuddyPanel').hidden = true;
+  document.querySelector('#skyBuddyToggle').setAttribute('aria-expanded', 'false');
+}
+
+function stopBreathing() {
+  if (breathInterval) clearInterval(breathInterval);
+  breathInterval = null;
+}
+function startBreathing() {
+  const button = document.querySelector('#breathButton');
+  const guide = document.querySelector('#breathGuide');
+  const phaseLabel = document.querySelector('#breathPhase');
+  const countLabel = document.querySelector('#breathCount');
+  if (!button || !guide || !phaseLabel || !countLabel) return;
+  stopBreathing();
+  let elapsed = 0;
+  button.textContent = 'Terminar pausa';
+  button.dataset.action = 'stop-breath';
+  guide.classList.add('is-active');
+  const tick = () => {
+    const remaining = Math.max(0, 60 - elapsed);
+    countLabel.textContent = `${remaining}s`;
+    const phase = elapsed % 14;
+    if (phase < 4) { phaseLabel.textContent = 'Inhala'; guide.dataset.phase = 'inhale'; }
+    else if (phase < 8) { phaseLabel.textContent = 'Mantén'; guide.dataset.phase = 'hold'; }
+    else { phaseLabel.textContent = 'Suelta'; guide.dataset.phase = 'exhale'; }
+    if (remaining === 0) {
+      stopBreathing(); guide.classList.remove('is-active'); delete guide.dataset.phase;
+      button.textContent = 'Empezar pausa'; button.dataset.action = 'start-breath';
+      phaseLabel.textContent = 'Bien hecho'; countLabel.textContent = '♡';
+      showToast('Gracias por regalarte este minuto.');
+      return;
+    }
+    elapsed += 1;
+  };
+  tick(); breathInterval = setInterval(tick, 1000);
 }
 
 function openDialog(id) {
@@ -266,6 +334,18 @@ document.addEventListener('click', (event) => {
   }
   const viewButton = event.target.closest('[data-view]');
   if (viewButton) { event.preventDefault(); renderView(viewButton.dataset.view); return; }
+  if (event.target.closest('#skyBuddyToggle')) {
+    const panel = document.querySelector('#skyBuddyPanel');
+    const opening = panel.hidden;
+    panel.hidden = !opening;
+    document.querySelector('#skyBuddyToggle').setAttribute('aria-expanded', String(opening));
+    return;
+  }
+  if (event.target.closest('#skyBuddyClose')) {
+    document.querySelector('#skyBuddyPanel').hidden = true;
+    document.querySelector('#skyBuddyToggle').setAttribute('aria-expanded', 'false');
+    return;
+  }
   const actionButton = event.target.closest('[data-action]');
   if (actionButton) {
     const action = actionButton.dataset.action;
@@ -274,6 +354,15 @@ document.addEventListener('click', (event) => {
     if (action === 'add-goal') openDialog('goalDialog');
     if (action === 'close-goal') closeDialog('goalDialog');
     if (action === 'edit-profile') { onboardingDraft = { ...data.profile }; renderOnboarding(1); }
+    if (action === 'start-breath') startBreathing();
+    if (action === 'stop-breath') {
+      stopBreathing(); const guide = document.querySelector('#breathGuide');
+      guide?.classList.remove('is-active'); if (guide) delete guide.dataset.phase;
+      const button = document.querySelector('#breathButton');
+      if (button) { button.textContent = 'Empezar pausa'; button.dataset.action = 'start-breath'; }
+      const phase = document.querySelector('#breathPhase'); const count = document.querySelector('#breathCount');
+      if (phase) phase.textContent = 'A tu ritmo'; if (count) count.textContent = '60';
+    }
     return;
   }
   const moodButton = event.target.closest('[data-mood]');
@@ -283,6 +372,8 @@ document.addEventListener('click', (event) => {
   }
   const dayButton = event.target.closest('[data-date]');
   if (dayButton) { selectedDate = dayButton.dataset.date; renderView('timeline'); return; }
+  const weekDayButton = event.target.closest('[data-week-date]');
+  if (weekDayButton) { selectedDate = weekDayButton.dataset.weekDate; renderView('timeline'); return; }
   const monthButton = event.target.closest('[data-month]');
   if (monthButton) { moveMonth(Number(monthButton.dataset.month)); return; }
   const filterButton = event.target.closest('[data-goal-filter]');

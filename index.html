@@ -32,17 +32,19 @@
     <template id="mascotTemplate">
       <svg class="mascot mascot--curious" viewBox="0 0 190 190" role="img" aria-label="La mascota de SKY">
         <defs>
-          <linearGradient id="mascotBody" x1="40" y1="35" x2="150" y2="170" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#dfe9ff"/></linearGradient>
+          <linearGradient id="mascotBody" x1="45" y1="48" x2="125" y2="176" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".58" stop-color="#f0f5ff"/><stop offset="1" stop-color="#c9dcff"/></linearGradient>
           <radialGradient id="mascotGlow" cx="0" cy="0" r="1" gradientTransform="matrix(28 0 0 28 132 56)" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9" stop-opacity=".9"/><stop offset="1" stop-color="#60a5fa" stop-opacity="0"/></radialGradient>
           <filter id="mascotShadow" x="16" y="22" width="160" height="164" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="9" stdDeviation="9" flood-color="#758acb" flood-opacity=".2"/></filter>
         </defs>
         <circle cx="132" cy="56" r="29" fill="url(#mascotGlow)"/>
         <path d="M125 54V31" stroke="#61d8f5" stroke-width="4" stroke-linecap="round"/><circle cx="125" cy="27" r="7" fill="#61d8f5"/><circle cx="125" cy="27" r="12" fill="#61d8f5" opacity=".17"/>
-        <path d="M50 104c0-28 20-50 45-50s45 22 45 50v39c0 18-14 32-32 32H82c-18 0-32-14-32-32v-39Z" fill="url(#mascotBody)" stroke="#c7d8fb" stroke-width="2" filter="url(#mascotShadow)"/>
-        <ellipse class="eye-open eye-left" cx="79" cy="111" rx="7" ry="9" fill="#14264f"/><ellipse class="eye-open eye-right" cx="111" cy="111" rx="7" ry="9" fill="#14264f"/>
-        <circle class="eye-shine" cx="81" cy="108" r="2" fill="#fff"/><circle class="eye-shine" cx="113" cy="108" r="2" fill="#fff"/>
-        <path class="eyes-happy" d="M72 111q7-8 14 0m18 0q7-8 14 0" fill="none" stroke="#14264f" stroke-width="3" stroke-linecap="round"/>
-        <path class="mouth mouth-smile" d="M88 126c4 4 9 4 13 0" fill="none" stroke="#3256aa" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M50 121c-11-2-18 5-18 14 0 10 8 17 19 16m88-30c11-2 18 5 18 14 0 10-8 17-19 16" fill="url(#mascotBody)" stroke="#c7d8fb" stroke-width="2"/>
+        <path d="M95 45c-29 0-50 23-50 54v36c0 20 14 35 34 35 7 0 11-7 16-7s9 7 16 7c20 0 34-15 34-35V99c0-31-21-54-50-54Z" fill="url(#mascotBody)" stroke="#c7d8fb" stroke-width="2" filter="url(#mascotShadow)"/>
+        <ellipse cx="75" cy="167" rx="17" ry="5" fill="#b9cefa" opacity=".5"/><ellipse cx="115" cy="167" rx="17" ry="5" fill="#b9cefa" opacity=".5"/>
+        <ellipse class="eye-open eye-left" cx="77" cy="105" rx="8" ry="10" fill="#14264f"/><ellipse class="eye-open eye-right" cx="113" cy="105" rx="8" ry="10" fill="#14264f"/>
+        <circle class="eye-shine" cx="79" cy="102" r="2.3" fill="#fff"/><circle class="eye-shine" cx="115" cy="102" r="2.3" fill="#fff"/>
+        <path class="eyes-happy" d="M69 105q8-9 16 0m20 0q8-9 16 0" fill="none" stroke="#14264f" stroke-width="3.4" stroke-linecap="round"/>
+        <path class="mouth mouth-smile" d="M88 122c4 5 10 5 14 0" fill="none" stroke="#3256aa" stroke-width="2.6" stroke-linecap="round"/>
         <path class="mouth mouth-think" d="M89 126h11" fill="none" stroke="#3256aa" stroke-width="2.4" stroke-linecap="round"/>
         <path class="support-arms" d="M53 141q-10-4-14 3m98-3q10-4 14 3" fill="none" stroke="#c7d8fb" stroke-width="8" stroke-linecap="round"/>
         <path class="support-heart" d="M95 148c-8-7-15 5 0 14 15-9 8-21 0-14Z" fill="#f3a9c8"/>
@@ -86,6 +88,19 @@
         <div class="content-wrap" id="viewRoot"></div>
       </main>
     </div>
+
+    <aside class="sky-buddy" id="skyBuddy" hidden aria-label="Atajo de SKY">
+      <div class="sky-buddy-panel" id="skyBuddyPanel" hidden>
+        <button class="icon-button sky-buddy-close" type="button" id="skyBuddyClose" aria-label="Cerrar">×</button>
+        <div class="sky-buddy-panel-head"><span class="sky-buddy-avatar" id="skyBuddyPanelAvatar"></span><div><strong>Hola, soy SKY</strong><small>¿Qué te vendría bien ahora?</small></div></div>
+        <button class="buddy-action" type="button" data-view="chat"><svg class="icon" aria-hidden="true"><use href="#i-chat"></use></svg> Hablar conmigo</button>
+        <button class="buddy-action" type="button" data-view="timeline"><svg class="icon" aria-hidden="true"><use href="#i-calendar"></use></svg> Guardar un momento</button>
+        <button class="buddy-action" type="button" data-view="goals"><svg class="icon" aria-hidden="true"><use href="#i-target"></use></svg> Revisar mis objetivos</button>
+      </div>
+      <button class="sky-buddy-toggle" type="button" id="skyBuddyToggle" aria-expanded="false" aria-controls="skyBuddyPanel">
+        <span class="sky-buddy-avatar" id="skyBuddyAvatar"></span><span class="sky-buddy-label"><strong>SKY</strong><small>Estoy aquí</small></span><span class="buddy-sparkle">✦</span>
+      </button>
+    </aside>
 
     <nav class="mobile-nav" aria-label="Navegación móvil">
       <button class="mobile-nav-item is-active" type="button" data-view="home"><svg class="icon"><use href="#i-home"/></svg><span>Inicio</span></button>

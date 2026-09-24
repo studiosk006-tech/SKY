@@ -22,10 +22,15 @@
       <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2M12 19.5v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2.5 12h2m15 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
       <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10m-4 4v2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
       <symbol id="i-face" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 14.2a4.2 4.2 0 0 0 7 0M9 9.5h.1m5.8 0h.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7.5 3v4M16.5 3v4M3.5 9.5h17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+      <symbol id="i-left" viewBox="0 0 24 24"><path d="m14.5 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-right" viewBox="0 0 24 24"><path d="m9.5 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-fire" viewBox="0 0 24 24"><path d="M13.1 2.8c.8 3.4-1.1 4.7-2.8 6.1-1.4 1.2-2.8 2.5-2.8 5a4.5 4.5 0 0 0 9 0c0-1.9-.8-3.4-2.1-4.7.1 2.1-1 2.8-1.7 3.1.2-4-1-7.2-3.1-9.5 0 0 1.9.3 3.5 0Z" fill="currentColor" opacity=".9"/><path d="M12 22a7.2 7.2 0 0 0 7.2-7.2c0-2.8-1.4-5-3.6-6.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     </svg>
 
     <template id="mascotTemplate">
-      <svg class="mascot" viewBox="0 0 190 190" role="img" aria-label="La mascota de SKY">
+      <svg class="mascot mascot--curious" viewBox="0 0 190 190" role="img" aria-label="La mascota de SKY">
         <defs>
           <linearGradient id="mascotBody" x1="40" y1="35" x2="150" y2="170" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#dfe9ff"/></linearGradient>
           <radialGradient id="mascotGlow" cx="0" cy="0" r="1" gradientTransform="matrix(28 0 0 28 132 56)" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9" stop-opacity=".9"/><stop offset="1" stop-color="#60a5fa" stop-opacity="0"/></radialGradient>
@@ -34,14 +39,19 @@
         <circle cx="132" cy="56" r="29" fill="url(#mascotGlow)"/>
         <path d="M125 54V31" stroke="#61d8f5" stroke-width="4" stroke-linecap="round"/><circle cx="125" cy="27" r="7" fill="#61d8f5"/><circle cx="125" cy="27" r="12" fill="#61d8f5" opacity=".17"/>
         <path d="M50 104c0-28 20-50 45-50s45 22 45 50v39c0 18-14 32-32 32H82c-18 0-32-14-32-32v-39Z" fill="url(#mascotBody)" stroke="#c7d8fb" stroke-width="2" filter="url(#mascotShadow)"/>
-        <ellipse cx="79" cy="111" rx="7" ry="9" fill="#14264f"/><ellipse cx="111" cy="111" rx="7" ry="9" fill="#14264f"/>
-        <circle cx="81" cy="108" r="2" fill="#fff"/><circle cx="113" cy="108" r="2" fill="#fff"/>
-        <path d="M88 126c4 4 9 4 13 0" fill="none" stroke="#3256aa" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse class="eye-open eye-left" cx="79" cy="111" rx="7" ry="9" fill="#14264f"/><ellipse class="eye-open eye-right" cx="111" cy="111" rx="7" ry="9" fill="#14264f"/>
+        <circle class="eye-shine" cx="81" cy="108" r="2" fill="#fff"/><circle class="eye-shine" cx="113" cy="108" r="2" fill="#fff"/>
+        <path class="eyes-happy" d="M72 111q7-8 14 0m18 0q7-8 14 0" fill="none" stroke="#14264f" stroke-width="3" stroke-linecap="round"/>
+        <path class="mouth mouth-smile" d="M88 126c4 4 9 4 13 0" fill="none" stroke="#3256aa" stroke-width="2.4" stroke-linecap="round"/>
+        <path class="mouth mouth-think" d="M89 126h11" fill="none" stroke="#3256aa" stroke-width="2.4" stroke-linecap="round"/>
+        <path class="support-arms" d="M53 141q-10-4-14 3m98-3q10-4 14 3" fill="none" stroke="#c7d8fb" stroke-width="8" stroke-linecap="round"/>
+        <path class="support-heart" d="M95 148c-8-7-15 5 0 14 15-9 8-21 0-14Z" fill="#f3a9c8"/>
         <ellipse cx="67" cy="128" rx="7" ry="4" fill="#f7b6c9" opacity=".55"/><ellipse cx="123" cy="128" rx="7" ry="4" fill="#f7b6c9" opacity=".55"/>
       </svg>
     </template>
 
-    <div class="app-shell">
+    <div class="onboarding-root" id="onboardingRoot"></div>
+    <div class="app-shell" id="appShell" hidden>
       <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
         <a class="brand" href="#inicio" data-view="home" aria-label="SKY, inicio">
           <span class="brand-mark"><svg class="icon"><use href="#i-sparkle"/></svg></span>
@@ -52,7 +62,7 @@
         <div class="nav-label">TU ESPACIO</div>
         <nav class="nav-list">
           <button class="nav-item is-active" type="button" data-view="home"><svg class="icon"><use href="#i-home"/></svg><span>Inicio</span></button>
-          <button class="nav-item" type="button" data-view="journal"><svg class="icon"><use href="#i-book"/></svg><span>Diario</span><span class="nav-dot"></span></button>
+          <button class="nav-item" type="button" data-view="timeline"><svg class="icon"><use href="#i-calendar"/></svg><span>Timeline</span><span class="nav-dot"></span></button>
           <button class="nav-item" type="button" data-view="goals"><svg class="icon"><use href="#i-target"/></svg><span>Objetivos</span></button>
           <button class="nav-item" type="button" data-view="insights"><svg class="icon"><use href="#i-chart"/></svg><span>Insights</span></button>
           <button class="nav-item" type="button" data-view="chat"><svg class="icon"><use href="#i-chat"/></svg><span>Chat con SKY</span></button>
@@ -79,7 +89,7 @@
 
     <nav class="mobile-nav" aria-label="Navegación móvil">
       <button class="mobile-nav-item is-active" type="button" data-view="home"><svg class="icon"><use href="#i-home"/></svg><span>Inicio</span></button>
-      <button class="mobile-nav-item" type="button" data-view="journal"><svg class="icon"><use href="#i-book"/></svg><span>Diario</span></button>
+      <button class="mobile-nav-item" type="button" data-view="timeline"><svg class="icon"><use href="#i-calendar"/></svg><span>Timeline</span></button>
       <button class="mobile-nav-create" type="button" data-view="chat" aria-label="Hablar con SKY"><svg class="icon"><use href="#i-plus"/></svg></button>
       <button class="mobile-nav-item" type="button" data-view="goals"><svg class="icon"><use href="#i-target"/></svg><span>Objetivos</span></button>
       <button class="mobile-nav-item" type="button" data-view="profile"><svg class="icon"><use href="#i-user"/></svg><span>Perfil</span></button>

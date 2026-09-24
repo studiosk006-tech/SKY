@@ -1,22 +1,22 @@
 # SKY — primera versión web
 
-Una primera interfaz web adaptable basada en la identidad visual de SKY: azul y violeta, superficies claras, esquinas suaves y una mascota cercana.
+Interfaz web responsive basada en las capturas de referencia: azul y violeta, superficies claras, mascota expresiva y navegación sencilla.
 
 ## Abrir
 
 Abre `index.html` en un navegador. No requiere instalación ni compilación.
 
-## Estado actual
+## Incluye
 
-- Interfaz responsive para escritorio y móvil.
-- Navegación entre inicio, diario, objetivos, insights, chat y perfil.
-- Selector de estado de ánimo local a la pantalla.
-- Estados vacíos: no se inventan objetivos, entradas, recuerdos ni estadísticas.
-- El chat y el almacenamiento todavía no están conectados a un backend.
+- Bienvenida de primera visita con preguntas de onboarding; la información se guarda en el navegador y se reutiliza en futuras visitas.
+- Inicio con check-in de ánimo, resumen del día y acceso a los objetivos.
+- Timeline con calendario y registros diarios de actividad y estado de ánimo.
+- Objetivos activos y completados, emoji, progreso editable e ideas que solo se añaden si la persona las elige.
+- Insights de descanso, motivación y momentos difíciles para empezar, calculados a partir de registros reales y con un mínimo de tres días distintos.
+- Racha de uso en el dispositivo actual.
+- Cuatro expresiones de la mascota: curiosa, feliz, pensativa y apoyando.
 
-## Archivos
+## Límites de esta versión
 
-- `index.html`: estructura y recursos SVG de la marca.
-- `styles.css`: sistema visual y adaptación a distintos tamaños.
-- `app.js`: navegación e interacciones de la maqueta.
+Los datos viven en el navegador actual; todavía no hay cuentas ni sincronización entre dispositivos. El chat de IA y el backend aún no están conectados. Los insights esperan suficientes registros y no muestran estadísticas inventadas.
 
